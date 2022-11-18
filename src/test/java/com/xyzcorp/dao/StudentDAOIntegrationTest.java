@@ -46,7 +46,6 @@ public class StudentDAOIntegrationTest {
             PreparedStatement preparedStatement =
                 connection.prepareStatement(createTableSQL);
             boolean execute = preparedStatement.execute();
-            System.out.println("Table created?" + execute);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
