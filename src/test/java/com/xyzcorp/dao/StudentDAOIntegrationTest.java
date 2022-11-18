@@ -24,6 +24,7 @@ public class StudentDAOIntegrationTest {
             .withDatabaseName("school");
     private static PGConnectionPoolDataSource source;
 
+    @SuppressWarnings("SqlNoDataSourceInspection")
     @BeforeAll
     static void setUp() {
         source = new PGConnectionPoolDataSource();
@@ -45,12 +46,13 @@ public class StudentDAOIntegrationTest {
         try (Connection connection = source.getConnection()) {
             PreparedStatement preparedStatement =
                 connection.prepareStatement(createTableSQL);
-            boolean execute = preparedStatement.execute();
+            preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @SuppressWarnings({"SqlResolve", "SqlNoDataSourceInspection"})
     @Test
     void testPersistWithAFindByStudentId() {
         String firstName = "Esperanza";
@@ -99,7 +101,7 @@ public class StudentDAOIntegrationTest {
         }
         optionalStudent.ifPresentOrElse(s -> {
             assertThat(s.id()).isNotNull();
-            assertThat(s.firstName()).isEqualTo("Esperanza");
+            assertThat(s.firstName()).isEqualTo(firstName);
             assertThat(s.lastName()).isEqualTo(lastName);
             assertThat(s.studentId()).isEqualTo(studentId);
         }, () -> Assertions.fail("Did not find student"));
